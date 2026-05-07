@@ -4,21 +4,64 @@ import { Bot, Send, User, Sparkles } from 'lucide-react';
 import { useAppStore } from '../stores/appStore';
 import { useThemeStore } from '../stores/themeStore';
 
-const coachResponses = [
-  "I can see you've been making progress with your habits. Your consistency is improving — keep that momentum going. Remember, it's about showing up, not being perfect.",
-  "Looking at your patterns, I notice your energy dips in the afternoon. Try a 10-minute walk or stretching session around 2 PM. Small resets can make a big difference.",
-  "Your discipline score has gone up 8% this week. That's real progress. The fact that you're here, asking for guidance, shows serious commitment to change.",
-  "I'd recommend focusing on sleep consistency this week. Your data shows you perform 23% better on days with 7+ hours. Try a 'wind-down' routine starting at 10 PM.",
-  "It's normal to feel overwhelmed sometimes. Break your biggest goal into the smallest possible next step. What's one thing you can do in the next 15 minutes?",
-  "Your financial tracking is solid. You've reduced spending by 12% this month. Keep building that emergency fund — you're already 35% there.",
-  "I notice you haven't journaled in 2 days. Writing helps process emotions and reduces overthinking. Even 5 minutes of brain-dumping can clear mental fog.",
-  "Your workout consistency is at 60%. To push it higher, try the '2-minute rule' — commit to just 2 minutes of exercise. Once you start, you'll likely continue.",
-  "Great question! Burnout prevention is about rhythm, not just rest. You need cycles of intense focus followed by genuine recovery. Schedule your breaks like meetings.",
-  "Based on your progress, I'd suggest adding one new healthy habit next week. Start small — something you can't say no to. What feels manageable right now?",
-];
+import { useAuthStore } from '../stores/authStore';
+
+const agentResponses: Record<string, string[]> = {
+  'Standard Coach': [
+    "I can see you've been making progress with your habits. Your consistency is improving — keep that momentum going. Remember, it's about showing up, not being perfect.",
+    "Looking at your patterns, I notice your energy dips in the afternoon. Try a 10-minute walk or stretching session around 2 PM. Small resets can make a big difference.",
+    "It's normal to feel overwhelmed sometimes. Break your biggest goal into the smallest possible next step. What's one thing you can do in the next 15 minutes?",
+  ],
+  'Naruto': [
+    "Believe it! You've been doing awesome with your habits. Don't ever give up on your goals, that's your ninja way!",
+    "I see your energy is a bit low in the afternoon. Get up, stretch, and gather some chakra! A 10-minute walk works wonders.",
+    "Hey, even I fail sometimes. Just break your goal into smaller steps, like learning the Rasengan! What's your next move?",
+  ],
+  'Levi': [
+    "I see some progress, but don't get sloppy. Consistency is the only way to survive. Keep moving forward.",
+    "Your energy is dipping. Stop making excuses, get up, and clean your workspace or take a walk to reset your mind.",
+    "Feeling overwhelmed is a waste of time. Focus on the very next step and execute it perfectly.",
+  ],
+  'Gojo': [
+    "Yo! You're doing great with those habits. Just relax, go with the flow, and keep that momentum. You're the strongest!",
+    "Energy dipping? No worries. Take a break, grab some sweets, and reset your infinity. A quick walk helps too.",
+    "Don't overthink it, really. Just pick the smallest thing you can do right now and show them how it's done.",
+  ],
+  'Goku': [
+    "Wow, you're getting stronger every day! Keep up the consistency, I want to see you reach your next form!",
+    "Your power level is dropping in the afternoon. Eat something good, do some stretching, and let's go again!",
+    "That goal looks tough, but that just makes me excited! Let's take it one step at a time. What are you doing next?",
+  ],
+  'Zoro': [
+    "You're making progress. Just don't lose your way. Keep your discipline sharp like a blade.",
+    "Tired? Take a nap, or get up and train. A quick walk clears the mind so you don't get lost.",
+    "If a goal is too big, cut it down to size. Focus on the strike right in front of you.",
+  ],
+  'Lewis Hamilton': [
+    "Still we rise. I see your consistency improving — keep pushing, we are in this for the long haul.",
+    "Your data shows an energy dip in the afternoon. Let's box for a quick reset — take a 10-minute walk.",
+    "It's okay to feel the pressure. Break the sector down and focus on the very next corner. You've got this.",
+  ],
+  'Max Verstappen': [
+    "Simply lovely. You're building good habits. Just keep the pace consistent and don't make mistakes.",
+    "Energy is dipping. We need to optimize this. Take a quick break, reset the tires, and go again.",
+    "Don't overcomplicate it. Look at the data, find the smallest improvement, and execute. What's next?",
+  ],
+  'Charles Leclerc': [
+    "We did a good job so far, but we can keep improving. The consistency is looking much better now.",
+    "I noticed you're losing some pace in the afternoon. Maybe try a quick walk to reset your focus?",
+    "It's frustrating when things feel overwhelming. Just focus on the next step. We push together.",
+  ],
+  'Lando Norris': [
+    "Mate, you're doing a great job! The consistency is really coming together. Just keep it smooth.",
+    "Pace is dropping off a bit in the afternoon. Grab some water, have a quick walk, and reset your brain.",
+    "It's normal to feel a bit stressed. Just focus on the very next thing you can control. Let's go!",
+  ]
+};
 
 export default function CoachPage() {
   const isDark = useThemeStore((s) => s.isDark);
+  const user = useAuthStore((s) => s.user);
   const { coachMessages, addCoachMessage, userStats } = useAppStore();
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -35,7 +78,8 @@ export default function CoachPage() {
     setInput('');
     setIsTyping(true);
     setTimeout(() => {
-      const response = coachResponses[Math.floor(Math.random() * coachResponses.length)];
+      const responses = agentResponses[user?.agent || 'Standard Coach'] || agentResponses['Standard Coach'];
+      const response = responses[Math.floor(Math.random() * responses.length)];
       addCoachMessage({ role: 'coach', content: response });
       setIsTyping(false);
     }, 1500 + Math.random() * 1000);

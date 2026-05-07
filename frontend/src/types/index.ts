@@ -3,6 +3,8 @@ export interface User {
   _id: string;
   name: string;
   email: string;
+  appMode: 'default' | 'anime' | 'f1';
+  agent: string;
   avatar?: string;
   age?: number;
   onboarded: boolean;

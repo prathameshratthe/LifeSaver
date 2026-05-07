@@ -6,6 +6,8 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true, lowercase: true },
   password: { type: String, required: true, minlength: 6 },
   avatar: String,
+  appMode: { type: String, enum: ['default', 'anime', 'f1'], default: 'default' },
+  agent: { type: String, default: 'Default Coach' },
   age: Number,
   onboarded: { type: Boolean, default: false },
   onboardingData: {

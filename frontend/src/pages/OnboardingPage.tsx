@@ -8,6 +8,7 @@ const habitOptions = ['Exercise', 'Reading', 'Meditation', 'Journaling', 'Health
 const outOfControlOptions = ['Time management', 'Spending', 'Diet', 'Sleep schedule', 'Screen time', 'Emotions', 'Career direction', 'Relationships', 'Health', 'Focus'];
 
 const steps = [
+  { title: 'Choose Your Path', subtitle: 'Select a theme and your personal AI coach' },
   { title: 'About You', subtitle: 'Let us know who you are' },
   { title: 'Your Struggles', subtitle: "What's been holding you back?" },
   { title: 'Your Goals', subtitle: 'Where do you want to be?' },
@@ -16,10 +17,17 @@ const steps = [
   { title: 'Ready!', subtitle: "Your personalized plan awaits" },
 ];
 
+const agentsByMode = {
+  default: ['Standard Coach'],
+  anime: ['Naruto', 'Levi', 'Gojo', 'Goku', 'Zoro'],
+  f1: ['Lewis Hamilton', 'Max Verstappen', 'Charles Leclerc', 'Lando Norris']
+};
+
 export default function OnboardingPage() {
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [data, setData] = useState({
+    appMode: 'default' as 'default' | 'anime' | 'f1', agent: 'Standard Coach',
     name: '', age: '', stressLevel: 5, sleepSchedule: '11pm-7am',
     selectedStruggles: [] as string[], careerGoals: '', financialGoals: '', healthGoals: '',
     selectedHabits: [] as string[], selectedOutOfControl: [] as string[],
@@ -33,15 +41,30 @@ export default function OnboardingPage() {
   };
 
   const canProceed = () => {
-    if (step === 0) return data.name && data.age;
-    if (step === 1) return data.selectedStruggles.length > 0;
-    if (step === 2) return true;
-    if (step === 3) return data.selectedHabits.length > 0;
-    if (step === 4) return data.selectedOutOfControl.length > 0;
+    if (step === 0) return data.appMode && data.agent;
+    if (step === 1) return data.name && data.age;
+    if (step === 2) return data.selectedStruggles.length > 0;
+    if (step === 3) return true;
+    if (step === 4) return data.selectedHabits.length > 0;
+    if (step === 5) return data.selectedOutOfControl.length > 0;
     return true;
   };
 
-  const finish = () => navigate('/app/dashboard');
+  const finish = async () => {
+    try {
+      await fetch('/api/auth/onboard', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(data)
+      });
+      navigate('/app/dashboard');
+    } catch (e) {
+      navigate('/app/dashboard');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-main flex items-center justify-center p-4">
@@ -70,6 +93,39 @@ export default function OnboardingPage() {
           <AnimatePresence mode="wait">
             <motion.div key={step} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.3 }}>
               {step === 0 && (
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-sm font-medium text-charcoal-300 mb-3">Select Mode</label>
+                    <div className="grid grid-cols-3 gap-3">
+                      {(['default', 'anime', 'f1'] as const).map(mode => (
+                        <button key={mode} onClick={() => setData({ ...data, appMode: mode, agent: agentsByMode[mode][0] })}
+                          className={`px-4 py-3 rounded-xl text-sm font-medium transition-all capitalize border
+                            ${data.appMode === mode ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/50' : 'bg-white/5 text-charcoal-300 border-white/10 hover:border-white/20'}`}>
+                          {mode}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <AnimatePresence mode="popLayout">
+                    {data.appMode !== 'default' && (
+                      <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}>
+                        <label className="block text-sm font-medium text-charcoal-300 mb-3 mt-2">Select Your AI Coach</label>
+                        <div className="grid grid-cols-2 gap-3">
+                          {agentsByMode[data.appMode].map(agent => (
+                            <button key={agent} onClick={() => setData({ ...data, agent })}
+                              className={`px-4 py-3 rounded-xl text-sm font-medium transition-all border text-left
+                                ${data.agent === agent ? 'bg-ocean-500/20 text-ocean-400 border-ocean-500/50' : 'bg-white/5 text-charcoal-300 border-white/10 hover:border-white/20'}`}>
+                              {agent}
+                            </button>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              )}
+
+              {step === 1 && (
                 <div className="space-y-5">
                   <div>
                     <label className="block text-sm font-medium text-charcoal-300 mb-2">Your Name</label>
@@ -96,7 +152,7 @@ export default function OnboardingPage() {
                 </div>
               )}
 
-              {step === 1 && (
+              {step === 2 && (
                 <div className="flex flex-wrap gap-3">
                   {struggles.map((s) => (
                     <button key={s} onClick={() => toggleItem('selectedStruggles', s)}
@@ -107,7 +163,7 @@ export default function OnboardingPage() {
                 </div>
               )}
 
-              {step === 2 && (
+              {step === 3 && (
                 <div className="space-y-5">
                   <div>
                     <label className="block text-sm font-medium text-charcoal-300 mb-2">Career Goals</label>
@@ -124,7 +180,7 @@ export default function OnboardingPage() {
                 </div>
               )}
 
-              {step === 3 && (
+              {step === 4 && (
                 <div className="flex flex-wrap gap-3">
                   {habitOptions.map((h) => (
                     <button key={h} onClick={() => toggleItem('selectedHabits', h)}
@@ -135,7 +191,7 @@ export default function OnboardingPage() {
                 </div>
               )}
 
-              {step === 4 && (
+              {step === 5 && (
                 <div className="flex flex-wrap gap-3">
                   {outOfControlOptions.map((o) => (
                     <button key={o} onClick={() => toggleItem('selectedOutOfControl', o)}
@@ -146,14 +202,14 @@ export default function OnboardingPage() {
                 </div>
               )}
 
-              {step === 5 && (
+              {step === 6 && (
                 <div className="text-center py-6">
                   <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', damping: 10 }}
                     className="w-20 h-20 rounded-full bg-gradient-emerald flex items-center justify-center mx-auto mb-6">
-                    <Check className="w-10 h-10 text-white" />
+                     <Check className="w-10 h-10 text-white" />
                   </motion.div>
                   <h3 className="text-xl font-bold text-white mb-2">You're all set, {data.name || 'friend'}!</h3>
-                  <p className="text-charcoal-400 text-sm mb-4">We've created a personalized recovery plan based on your responses. Your dashboard is ready.</p>
+                  <p className="text-charcoal-400 text-sm mb-4">We've assigned <span className="font-semibold text-emerald-400">{data.agent}</span> as your AI coach.</p>
                   <div className="flex flex-wrap gap-2 justify-center mb-4">
                     {data.selectedStruggles.slice(0, 4).map((s) => (
                       <span key={s} className="px-3 py-1 rounded-lg bg-rose-500/10 text-rose-400 text-xs">{s}</span>
@@ -173,7 +229,7 @@ export default function OnboardingPage() {
             </button>
           ) : <div />}
 
-          {step < 5 ? (
+          {step < 6 ? (
             <button onClick={() => setStep(step + 1)} disabled={!canProceed()}
               className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-emerald text-white font-medium hover:opacity-90 transition-all disabled:opacity-30">
               Next <ArrowRight className="w-4 h-4" />

@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useThemeStore } from './stores/themeStore';
+import { useAuthStore } from './stores/authStore';
 import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
@@ -21,10 +22,16 @@ import AppLayout from './components/layout/AppLayout';
 
 function App() {
   const isDark = useThemeStore((s) => s.isDark);
+  const user = useAuthStore((s) => s.user);
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', isDark);
-  }, [isDark]);
+    if (user?.appMode) {
+      document.documentElement.dataset.theme = user.appMode;
+    } else {
+      delete document.documentElement.dataset.theme;
+    }
+  }, [isDark, user?.appMode]);
 
   return (
     <BrowserRouter>

@@ -63,8 +63,22 @@ router.put('/profile', auth, async (req, res) => {
 // Onboard
 router.post('/onboard', auth, async (req, res) => {
   try {
-    const user = await User.findByIdAndUpdate(req.user.id, { onboarded: true, onboardingData: req.body }, { new: true }).select('-password');
-    res.json({ user });
+    const { 
+      age, stressLevel, sleepSchedule, 
+      selectedStruggles, careerGoals, financialGoals, healthGoals, 
+      selectedHabits, selectedOutOfControl,
+      appMode, agent
+    } = req.body;
+
+    const user = await User.findById(req.user.id);
+    user.age = age;
+    user.appMode = appMode || 'default';
+    user.agent = agent || 'Default Coach';
+    user.onboardingData = { age, stressLevel, sleepSchedule, selectedStruggles, careerGoals, financialGoals, healthGoals, selectedHabits, selectedOutOfControl };
+    user.onboarded = true;
+    await user.save();
+    
+    res.json({ user: { _id: user._id, name: user.name, email: user.email, onboarded: user.onboarded, appMode: user.appMode, agent: user.agent } });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
