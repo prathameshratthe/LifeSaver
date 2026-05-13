@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { BookOpen, Plus, Sparkles, Calendar, Tag } from 'lucide-react';
+import { Plus, Sparkles, Calendar, Tag } from 'lucide-react';
 import { useAppStore } from '../stores/appStore';
 import { useThemeStore } from '../stores/themeStore';
 

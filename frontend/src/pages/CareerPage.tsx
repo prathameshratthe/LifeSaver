@@ -14,7 +14,7 @@ const statusColors: Record<string, string> = {
 
 export default function CareerPage() {
   const isDark = useThemeStore((s) => s.isDark);
-  const { jobApplications, skills, addJobApplication, updateSkillLevel } = useAppStore();
+  const { jobApplications, skills, addJobApplication } = useAppStore();
   const [showAdd, setShowAdd] = useState(false);
   const [newApp, setNewApp] = useState({ company: '', position: '', status: 'applied' as const, appliedDate: new Date().toISOString().split('T')[0], notes: '' });
   const cardClass = `${isDark ? 'glass-card' : 'glass-card-light'} p-5`;

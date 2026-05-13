@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, TrendingDown, TrendingUp, Wallet, PiggyBank, CreditCard, X, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { Plus, TrendingDown, TrendingUp, Wallet, PiggyBank, X, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip } from 'recharts';
 import { useAppStore } from '../stores/appStore';
 import { useThemeStore } from '../stores/themeStore';

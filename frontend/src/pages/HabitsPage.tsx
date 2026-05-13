@@ -22,7 +22,7 @@ export default function HabitsPage() {
   const { habits, addHabit, toggleHabitDate, deleteHabit } = useAppStore();
   const [showAdd, setShowAdd] = useState(false);
   const [weekOffset, setWeekOffset] = useState(0);
-  const [newHabit, setNewHabit] = useState({ name: '', category: 'health' as HabitCategory, difficulty: 'medium' as const, frequency: 'daily' as const, color: '#0cce6b', icon: '🎯' });
+  const [newHabit, setNewHabit] = useState({ name: '', category: 'health' as HabitCategory, difficulty: 'medium' as 'easy' | 'medium' | 'hard', frequency: 'daily' as const, color: '#0cce6b', icon: '🎯' });
 
   const today = new Date();
   const weekStart = new Date(today);

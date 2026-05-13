@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Heart, Droplets, Moon, Activity, Scale, Zap, Plus } from 'lucide-react';
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
+import { Heart, Droplets, Moon, Activity, Scale, Zap } from 'lucide-react';
+import { XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { useAppStore } from '../stores/appStore';
 import { useThemeStore } from '../stores/themeStore';
 
 export default function WellnessPage() {
   const isDark = useThemeStore((s) => s.isDark);
-  const { healthLogs, addHealthLog, moodEntries, addMoodEntry } = useAppStore();
+  const { healthLogs, addHealthLog } = useAppStore();
   const [todayLog, setTodayLog] = useState({ date: new Date().toISOString().split('T')[0], sleepHours: 7, waterIntake: 2, exercise: 30, steps: 5000, weight: 75, energyLevel: 3 });
   const [todayMood, setTodayMood] = useState({ mood: 3, energy: 3, stress: 3, motivation: 3 });
 
@@ -26,7 +26,7 @@ export default function WellnessPage() {
 
   const saveTodayLog = () => {
     addHealthLog(todayLog);
-    addMoodEntry({ date: todayLog.date, ...todayMood });
+
   };
 
   return (
@@ -70,10 +70,10 @@ export default function WellnessPage() {
           ].map((field) => (
             <div key={field.key}>
               <label className={`text-xs font-medium mb-1 block ${isDark ? 'text-charcoal-300' : 'text-charcoal-600'}`}>
-                {field.label}: <span className="text-emerald-400">{(todayLog as Record<string, number>)[field.key]}</span>
+                {field.label}: <span className="text-emerald-400">{(todayLog as any)[field.key]}</span>
               </label>
               <input type="range" min={field.min} max={field.max} step={field.step}
-                value={(todayLog as Record<string, number>)[field.key]}
+                value={(todayLog as any)[field.key]}
                 onChange={(e) => setTodayLog({ ...todayLog, [field.key]: Number(e.target.value) })}
                 className="w-full accent-emerald-500" />
             </div>

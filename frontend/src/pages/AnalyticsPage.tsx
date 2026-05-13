@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, RadarChart, Radar, PolarGrid, PolarAngleAxis } from 'recharts';
-import { TrendingUp, Target, Flame, Timer, Brain, Trophy } from 'lucide-react';
+import { TrendingUp, Flame, Timer, Brain, Trophy } from 'lucide-react';
 import { useAppStore } from '../stores/appStore';
 import { useThemeStore } from '../stores/themeStore';
 
@@ -8,7 +8,7 @@ const COLORS = ['#0cce6b', '#53a8d4', '#8b5cf6', '#f59e0b', '#f43f5e', '#a78bfa'
 
 export default function AnalyticsPage() {
   const isDark = useThemeStore((s) => s.isDark);
-  const { habits, moodEntries, focusSessions, lifeScore, userStats, transactions } = useAppStore();
+  const { habits, moodEntries, focusSessions, lifeScore, userStats } = useAppStore();
   const cardClass = `${isDark ? 'glass-card' : 'glass-card-light'} p-5`;
 
   // Habit consistency (last 30 days)
@@ -122,7 +122,7 @@ export default function AnalyticsPage() {
           <h3 className="text-lg font-semibold mb-4">Focus Distribution</h3>
           <ResponsiveContainer width="100%" height={250}>
             <PieChart>
-              <Pie data={focusByCategory} cx="50%" cy="50%" innerRadius={50} outerRadius={90} dataKey="value" stroke="none" label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}>
+              <Pie data={focusByCategory} cx="50%" cy="50%" innerRadius={50} outerRadius={90} dataKey="value" stroke="none" label={({ name, percent }) => `${name} ${((percent || 0) * 100).toFixed(0)}%`}>
                 {focusByCategory.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
               </Pie>
               <Tooltip contentStyle={{ background: isDark ? '#1e2a4a' : '#fff', border: 'none', borderRadius: 12 }} />

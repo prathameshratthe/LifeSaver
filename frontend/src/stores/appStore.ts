@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { api } from '../lib/api';
-import type { Habit, Goal, Transaction, Budget, SavingsGoal, JournalEntry, HealthLog, FocusSession, JobApplication, Skill, MoodEntry, UserStats, Badge, AppNotification, CoachMessage, DisciplineSchedule, LifeScore, DopamineCredits, VisionItem } from '../types';
+import type { Habit, Goal, Transaction, Budget, SavingsGoal, JournalEntry, HealthLog, FocusSession, JobApplication, Skill, MoodEntry, UserStats, AppNotification, CoachMessage, DisciplineSchedule, LifeScore, DopamineCredits, VisionItem } from '../types';
 
 export interface UserProfile {
   _id: string;

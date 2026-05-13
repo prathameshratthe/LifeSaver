@@ -27,7 +27,7 @@ export default function FocusPage() {
   const [customMin, setCustomMin] = useState('');
   const [sessionCategory, setSessionCategory] = useState('coding');
   const startTimeRef = useRef<string>('');
-  const intervalRef = useRef<ReturnType<typeof setInterval>>();
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const totalSeconds = duration * 60;
   const progress = ((totalSeconds - timeLeft) / totalSeconds) * 100;
@@ -57,7 +57,7 @@ export default function FocusPage() {
   useEffect(() => {
     if (isRunning && timeLeft > 0) {
       intervalRef.current = setInterval(() => setTimeLeft((t) => t - 1), 1000);
-      return () => clearInterval(intervalRef.current);
+      return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
     }
     if (timeLeft === 0 && isRunning) {
       setIsRunning(false);

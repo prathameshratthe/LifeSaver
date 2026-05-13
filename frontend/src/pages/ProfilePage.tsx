@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { User, Mail, Calendar, Trophy, Flame, Target, Zap, Star, Award } from 'lucide-react';
+import { User, Mail, Calendar, Flame, Target, Zap, Star, Award } from 'lucide-react';
 import { useAppStore } from '../stores/appStore';
 import { useThemeStore } from '../stores/themeStore';
 
@@ -8,7 +8,7 @@ export default function ProfilePage() {
   const { user, userStats, habits } = useAppStore();
   const cardClass = `${isDark ? 'glass-card' : 'glass-card-light'} p-5`;
 
-  const xpForNextLevel = (userStats.level) * 200;
+
   const xpProgress = ((userStats.xp % 200) / 200) * 100;
 
   return (

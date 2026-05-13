@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { useThemeStore, type AppMode } from '../stores/themeStore';
+import { type AppMode } from '../stores/themeStore';
 
 interface CharacterCardProps {
   agent: string;

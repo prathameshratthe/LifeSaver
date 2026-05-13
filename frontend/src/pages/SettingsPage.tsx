@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Moon, Sun, Bell, Download, RotateCcw, Shield, Palette, Globe, Volume2 } from 'lucide-react';
+import { Moon, Sun, Bell, Download, RotateCcw, Shield, Palette } from 'lucide-react';
 import { useThemeStore } from '../stores/themeStore';
 import { useState } from 'react';
 
