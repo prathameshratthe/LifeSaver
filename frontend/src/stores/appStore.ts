@@ -274,17 +274,23 @@ export const useAppStore = create<AppState>()((set, get) => ({
   },
 
   sendCoachMessage: async (message) => {
-    const tempId = Math.random().toString();
-    const userMsg = { _id: tempId, role: 'user', content: message, timestamp: new Date().toISOString() };
-    set((s) => ({ 
-      coachMessages: [...s.coachMessages, userMsg as CoachMessage]
+    const tempId = `temp-${Math.random()}`;
+    // Optimistically add user message
+    set((s) => ({
+      coachMessages: [...s.coachMessages, {
+        _id: tempId, role: 'user' as const, content: message, timestamp: new Date().toISOString()
+      } as CoachMessage]
     }));
     try {
       const response = await api.sendCoachMessage(message);
+      // Backend returns { userMsg, coachMsg } — replace temp with real msgs
       set((s) => ({
-        coachMessages: [...s.coachMessages.filter(m => m._id !== tempId), 
-          { _id: Math.random().toString(), role: 'user', content: message, timestamp: new Date().toISOString() } as CoachMessage,
-          response
+        coachMessages: [
+          ...s.coachMessages.filter(m => m._id !== tempId),
+          ...(response.userMsg ? [{ ...response.userMsg, role: 'user' as const, timestamp: response.userMsg.createdAt }] : []),
+          ...(response.coachMsg ? [{ ...response.coachMsg, role: 'coach' as const, timestamp: response.coachMsg.createdAt }] : []),
+          // Fallback: if backend returns a single coach message object directly
+          ...(!response.userMsg && !response.coachMsg && response._id ? [{ ...response, role: 'coach' as const, timestamp: response.createdAt }] : []),
         ]
       }));
     } catch (error) {

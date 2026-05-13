@@ -45,8 +45,83 @@
   --animate-pulse-glow: pulse-glow 2s ease-in-out infinite;
   --animate-float: float 3s ease-in-out infinite;
   --animate-scale-in: scale-in 0.3s ease-out;
+  --animate-shimmer: shimmer 2s linear infinite;
+  --animate-race-stripe: race-stripe 1.5s linear infinite;
+  --animate-chakra-pulse: chakra-pulse 2s ease-in-out infinite;
+  --animate-xp-fill: xp-fill 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
+/* ================================================
+   CSS CUSTOM PROPERTIES — Theme Tokens
+   ================================================ */
+:root {
+  --theme-primary: #0cce6b;
+  --theme-primary-dim: rgba(12, 206, 107, 0.15);
+  --theme-secondary: #53a8d4;
+  --theme-bg-main: #0d0d1a;
+  --theme-bg-card: rgba(30, 42, 74, 0.5);
+  --theme-glow: rgba(12, 206, 107, 0.3);
+  --theme-gradient: linear-gradient(135deg, #0cce6b 0%, #53a8d4 100%);
+  --theme-bg-gradient: linear-gradient(135deg, #0d0d1a 0%, #1a1a2e 50%, #16213e 100%);
+  --theme-xp-bar: linear-gradient(90deg, #0cce6b, #53a8d4);
+  --theme-font: 'Inter', system-ui, sans-serif;
+}
+
+/* ================================================
+   ANIME THEME — Orange / Purple / Dark Blue
+   ================================================ */
+:root[data-theme="anime"] {
+  --theme-primary: #f97316;
+  --theme-primary-dim: rgba(249, 115, 22, 0.15);
+  --theme-secondary: #a855f7;
+  --theme-bg-main: #0d0a1a;
+  --theme-bg-card: rgba(30, 15, 50, 0.6);
+  --theme-glow: rgba(249, 115, 22, 0.4);
+  --theme-gradient: linear-gradient(135deg, #f97316 0%, #a855f7 100%);
+  --theme-bg-gradient: linear-gradient(135deg, #0d0a1a 0%, #1a0d2e 40%, #0f0820 100%);
+  --theme-xp-bar: linear-gradient(90deg, #f97316, #ec4899, #a855f7);
+  --theme-font: 'Inter', system-ui, sans-serif;
+
+  /* Override Tailwind color tokens for anime */
+  --color-emerald-500: #f97316;
+  --color-emerald-400: #fb923c;
+  --color-emerald-300: #fdba74;
+  --color-emerald-200: #fed7aa;
+  --color-emerald-100: #ffedd5;
+  --color-ocean-500: #581c87;
+  --color-ocean-400: #7e22ce;
+  --color-ocean-300: #a855f7;
+}
+
+/* ================================================
+   F1 THEME — Red / Carbon / Chrome
+   ================================================ */
+:root[data-theme="f1"] {
+  --theme-primary: #dc2626;
+  --theme-primary-dim: rgba(220, 38, 38, 0.15);
+  --theme-secondary: #f59e0b;
+  --theme-bg-main: #090909;
+  --theme-bg-card: rgba(20, 10, 10, 0.7);
+  --theme-glow: rgba(220, 38, 38, 0.4);
+  --theme-gradient: linear-gradient(135deg, #dc2626 0%, #f59e0b 100%);
+  --theme-bg-gradient: linear-gradient(135deg, #090909 0%, #1a0505 40%, #0d0808 100%);
+  --theme-xp-bar: linear-gradient(90deg, #dc2626, #ef4444, #f59e0b);
+  --theme-font: 'Inter', system-ui, sans-serif;
+
+  /* Override Tailwind color tokens for F1 */
+  --color-emerald-500: #dc2626;
+  --color-emerald-400: #ef4444;
+  --color-emerald-300: #f87171;
+  --color-emerald-200: #fca5a5;
+  --color-emerald-100: #fee2e2;
+  --color-ocean-500: #78350f;
+  --color-ocean-400: #b45309;
+  --color-ocean-300: #f59e0b;
+}
+
+/* ================================================
+   KEYFRAMES
+   ================================================ */
 @keyframes fade-in {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -63,8 +138,8 @@
 }
 
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 20px rgba(12, 206, 107, 0.1); }
-  50% { box-shadow: 0 0 40px rgba(12, 206, 107, 0.3); }
+  0%, 100% { box-shadow: 0 0 20px var(--theme-glow); }
+  50% { box-shadow: 0 0 40px var(--theme-glow), 0 0 80px var(--theme-primary-dim); }
 }
 
 @keyframes float {
@@ -77,45 +152,63 @@
   to { opacity: 1; transform: scale(1); }
 }
 
-/* Base Styles handled by Tailwind Preflight */
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes race-stripe {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(400%); }
+}
+
+@keyframes chakra-pulse {
+  0%, 100% {
+    box-shadow: 0 0 15px var(--theme-glow), inset 0 0 15px var(--theme-primary-dim);
+  }
+  50% {
+    box-shadow: 0 0 40px var(--theme-glow), inset 0 0 30px var(--theme-primary-dim);
+  }
+}
+
+@keyframes xp-fill {
+  from { width: 0%; }
+  to { width: var(--xp-pct); }
+}
+
+@keyframes level-up-burst {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes float-up {
+  0% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(-60px); opacity: 0; }
+}
+
+/* ================================================
+   BASE STYLES
+   ================================================ */
 html {
   scroll-behavior: smooth;
 }
 
 body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: var(--theme-font);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: var(--theme-bg-main);
+  transition: background 0.5s ease;
 }
 
-/* Dark mode base */
 .dark {
   color-scheme: dark;
 }
 
-:root[data-theme="anime"] {
-  --color-emerald-500: #f97316;
-  --color-emerald-400: #fb923c;
-  --color-emerald-300: #fdba74;
-  --color-emerald-200: #fed7aa;
-  --color-emerald-100: #ffedd5;
-  --color-ocean-500: #1d4ed8;
-  --color-ocean-400: #2563eb;
-  --color-ocean-300: #3b82f6;
-}
-
-:root[data-theme="f1"] {
-  --color-emerald-500: #dc2626;
-  --color-emerald-400: #ef4444;
-  --color-emerald-300: #f87171;
-  --color-emerald-200: #fca5a5;
-  --color-emerald-100: #fee2e2;
-  --color-ocean-500: #0f172a;
-  --color-ocean-400: #1e293b;
-  --color-ocean-300: #334155;
-}
-
-/* Glassmorphism utilities */
+/* ================================================
+   GLASSMORPHISM
+   ================================================ */
 .glass {
   background: rgba(26, 26, 46, 0.7);
   backdrop-filter: blur(20px);
@@ -131,7 +224,7 @@ body {
 }
 
 .glass-card {
-  background: rgba(30, 42, 74, 0.5);
+  background: var(--theme-bg-card);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.06);
@@ -142,7 +235,7 @@ body {
 .glass-card:hover {
   border-color: rgba(255, 255, 255, 0.12);
   transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px var(--theme-primary-dim);
 }
 
 .glass-card-light {
@@ -160,9 +253,28 @@ body {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
 }
 
-/* Gradient backgrounds */
+/* Themed glass card — glows with current theme color */
+.glass-card-themed {
+  background: var(--theme-bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--theme-primary-dim);
+  border-radius: 16px;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 20px var(--theme-primary-dim);
+}
+
+.glass-card-themed:hover {
+  box-shadow: 0 0 40px var(--theme-glow);
+  transform: translateY(-2px);
+}
+
+/* ================================================
+   GRADIENT BACKGROUNDS
+   ================================================ */
 .bg-gradient-main {
-  background: linear-gradient(135deg, #0d0d1a 0%, #1a1a2e 50%, #16213e 100%);
+  background: var(--theme-bg-gradient);
+  transition: background 0.6s ease;
 }
 
 .bg-gradient-main-light {
@@ -170,11 +282,12 @@ body {
 }
 
 .bg-gradient-card {
-  background: linear-gradient(135deg, rgba(15, 52, 96, 0.3) 0%, rgba(12, 206, 107, 0.1) 100%);
+  background: linear-gradient(135deg, rgba(15, 52, 96, 0.3) 0%, var(--theme-primary-dim) 100%);
 }
 
 .bg-gradient-emerald {
-  background: linear-gradient(135deg, #0cce6b 0%, #10b981 100%);
+  background: var(--theme-gradient);
+  transition: background 0.6s ease;
 }
 
 .bg-gradient-ocean {
@@ -189,36 +302,198 @@ body {
   background: linear-gradient(135deg, #8b5cf6 0%, #53a8d4 100%);
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
+/* ================================================
+   GAMIFICATION UTILITIES
+   ================================================ */
+
+/* XP Bar */
+.xp-bar-track {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 99px;
+  overflow: hidden;
+  position: relative;
 }
 
-::-webkit-scrollbar-track {
-  background: transparent;
+.xp-bar-fill {
+  height: 100%;
+  border-radius: 99px;
+  background: var(--theme-xp-bar);
+  background-size: 200% auto;
+  animation: shimmer 2s linear infinite;
+  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
 }
 
+.xp-bar-fill::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s linear infinite;
+  border-radius: 99px;
+}
+
+/* Level badge */
+.level-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--theme-gradient);
+  color: white;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px var(--theme-glow);
+}
+
+/* Theme badge (mode indicator) */
+.theme-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  border: 1px solid var(--theme-primary-dim);
+  color: var(--theme-primary);
+  background: var(--theme-primary-dim);
+}
+
+/* Character card */
+.character-card {
+  background: linear-gradient(135deg, var(--theme-bg-card) 0%, var(--theme-primary-dim) 100%);
+  border: 1px solid var(--theme-primary-dim);
+  border-radius: 20px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  animation: chakra-pulse 3s ease-in-out infinite;
+}
+
+.character-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent);
+  animation: race-stripe 3s linear infinite;
+}
+
+/* F1 specific — carbon fiber texture overlay */
+:root[data-theme="f1"] .character-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 2px,
+    rgba(255,255,255,0.015) 2px,
+    rgba(255,255,255,0.015) 4px
+  );
+  border-radius: 20px;
+  pointer-events: none;
+}
+
+/* Anime specific — energy shimmer */
+:root[data-theme="anime"] .character-card {
+  animation: chakra-pulse 2s ease-in-out infinite;
+}
+
+/* Level-up toast */
+.level-up-toast {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  background: var(--theme-gradient);
+  color: white;
+  padding: 12px 28px;
+  border-radius: 99px;
+  font-weight: 700;
+  font-size: 16px;
+  box-shadow: 0 8px 32px var(--theme-glow);
+  animation: scale-in 0.4s ease-out, float-up 2s ease-in 1.5s forwards;
+}
+
+/* Pulse glow on active elements */
+.pulse-themed {
+  animation: chakra-pulse 2s ease-in-out infinite;
+}
+
+/* Active nav item themed */
+.nav-active-themed {
+  background: var(--theme-primary-dim);
+  color: var(--theme-primary);
+  border-right: 3px solid var(--theme-primary);
+}
+
+/* Mode select buttons in onboarding */
+.mode-btn-active {
+  background: var(--theme-primary-dim);
+  color: var(--theme-primary);
+  border-color: var(--theme-primary);
+  box-shadow: 0 0 16px var(--theme-primary-dim);
+}
+
+/* F1 racing stripe accent */
+:root[data-theme="f1"] .racing-stripe {
+  position: relative;
+  overflow: hidden;
+}
+
+:root[data-theme="f1"] .racing-stripe::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--theme-gradient);
+  animation: shimmer 1.5s linear infinite;
+  background-size: 200% auto;
+}
+
+/* Anime chakra ring */
+:root[data-theme="anime"] .chakra-ring {
+  box-shadow: 0 0 0 2px var(--theme-primary), 0 0 20px var(--theme-glow);
+  animation: chakra-pulse 2s ease-in-out infinite;
+}
+
+/* ================================================
+   SCROLLBAR
+   ================================================ */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 3px;
 }
+::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
 
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-/* Focus ring */
+/* ================================================
+   FOCUS & TEXT
+   ================================================ */
 .focus-ring:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(12, 206, 107, 0.3);
+  box-shadow: 0 0 0 3px var(--theme-glow);
 }
 
-/* Text gradient */
 .text-gradient {
-  background: linear-gradient(135deg, #0cce6b, #53a8d4);
+  background: var(--theme-gradient);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  transition: background 0.5s ease;
 }
 
 .text-gradient-warm {
@@ -228,17 +503,40 @@ body {
   background-clip: text;
 }
 
-/* Heatmap colors */
-.heatmap-0 { background: rgba(12, 206, 107, 0.05); }
-.heatmap-1 { background: rgba(12, 206, 107, 0.2); }
-.heatmap-2 { background: rgba(12, 206, 107, 0.4); }
-.heatmap-3 { background: rgba(12, 206, 107, 0.6); }
-.heatmap-4 { background: rgba(12, 206, 107, 0.8); }
-.heatmap-5 { background: rgba(12, 206, 107, 1); }
+/* ================================================
+   HEATMAP COLORS (themed)
+   ================================================ */
+.heatmap-0 { background: var(--theme-primary-dim); opacity: 0.3; }
+.heatmap-1 { background: var(--theme-primary); opacity: 0.2; }
+.heatmap-2 { background: var(--theme-primary); opacity: 0.4; }
+.heatmap-3 { background: var(--theme-primary); opacity: 0.6; }
+.heatmap-4 { background: var(--theme-primary); opacity: 0.8; }
+.heatmap-5 { background: var(--theme-primary); opacity: 1; }
 
-/* Progress ring */
+/* ================================================
+   PROGRESS RING
+   ================================================ */
 .progress-ring-circle {
   transition: stroke-dashoffset 0.5s ease;
   transform: rotate(-90deg);
   transform-origin: 50% 50%;
+}
+
+/* ================================================
+   ONBOARDING THEME TRANSITIONS
+   ================================================ */
+.onboarding-bg {
+  background: var(--theme-bg-gradient);
+  transition: background 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Animated orbs follow theme */
+.theme-orb-primary {
+  background: var(--theme-primary-dim);
+  transition: background 0.6s ease;
+}
+
+.theme-orb-secondary {
+  background: rgba(var(--theme-secondary), 0.08);
+  transition: background 0.6s ease;
 }

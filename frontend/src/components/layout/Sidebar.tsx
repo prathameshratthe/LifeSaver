@@ -23,9 +23,47 @@ const navItems = [
   { path: '/app/profile', icon: User, label: 'Profile' },
 ];
 
+const modeEmoji: Record<string, string> = {
+  default: '✨',
+  anime: '⚡',
+  f1: '🏎',
+};
+
+function AgentBadge({ agent, mode, open }: { agent: string; mode: string; open: boolean }) {
+  if (!open) return null;
+  return (
+    <motion.div
+      initial={{ opacity: 0, height: 0 }}
+      animate={{ opacity: 1, height: 'auto' }}
+      exit={{ opacity: 0, height: 0 }}
+      className="mx-3 mb-3 px-3 py-2.5 rounded-xl"
+      style={{
+        background: 'var(--theme-primary-dim)',
+        border: '1px solid var(--theme-primary-dim)',
+      }}
+    >
+      <div className="flex items-center gap-2">
+        <span className="text-lg">{modeEmoji[mode] || '✨'}</span>
+        <div className="min-w-0">
+          <div className="text-xs font-semibold truncate" style={{ color: 'var(--theme-primary)' }}>
+            {agent}
+          </div>
+          <div className="text-[10px] text-charcoal-500 capitalize">{mode} mode</div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 export default function Sidebar() {
   const isDark = useThemeStore((s) => s.isDark);
+  const { appMode, agent } = useThemeStore();
   const { sidebarOpen, setSidebarOpen } = useAppStore();
+
+  const activeClass = 'nav-active-themed';
+  const inactiveClass = isDark
+    ? 'text-charcoal-400 hover:text-white hover:bg-white/5'
+    : 'text-charcoal-500 hover:text-charcoal-900 hover:bg-charcoal-50';
 
   return (
     <>
@@ -42,6 +80,7 @@ export default function Sidebar() {
         )}
       </AnimatePresence>
 
+      {/* Desktop sidebar */}
       <motion.aside
         className={`fixed top-0 left-0 h-full z-50 hidden md:flex flex-col transition-all duration-300
           ${isDark ? 'bg-charcoal-900/95 border-r border-white/5' : 'bg-white/95 border-r border-charcoal-100'}
@@ -49,7 +88,10 @@ export default function Sidebar() {
       >
         {/* Logo */}
         <div className="flex items-center gap-3 p-5 mb-2">
-          <div className="w-10 h-10 min-w-[40px] rounded-xl bg-gradient-emerald flex items-center justify-center flex-shrink-0">
+          <div
+            className="w-10 h-10 min-w-[40px] rounded-xl flex items-center justify-center flex-shrink-0"
+            style={{ background: 'var(--theme-gradient)' }}
+          >
             <Sparkles className="w-5 h-5 text-white" />
           </div>
           <AnimatePresence>
@@ -67,6 +109,13 @@ export default function Sidebar() {
           </AnimatePresence>
         </div>
 
+        {/* Agent badge */}
+        <AnimatePresence>
+          {sidebarOpen && (
+            <AgentBadge agent={agent} mode={appMode} open={sidebarOpen} />
+          )}
+        </AnimatePresence>
+
         {/* Nav Items */}
         <nav className="flex-1 px-3 space-y-1 overflow-y-auto">
           {navItems.map((item) => (
@@ -75,14 +124,7 @@ export default function Sidebar() {
               to={item.path}
               className={({ isActive }) =>
                 `flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group
-                ${isActive
-                  ? isDark
-                    ? 'bg-emerald-500/15 text-emerald-400'
-                    : 'bg-emerald-500/10 text-emerald-500'
-                  : isDark
-                    ? 'text-charcoal-400 hover:text-white hover:bg-white/5'
-                    : 'text-charcoal-500 hover:text-charcoal-900 hover:bg-charcoal-50'
-                }
+                ${isActive ? activeClass : inactiveClass}
                 ${!sidebarOpen ? 'justify-center' : ''}`
               }
             >
@@ -126,7 +168,10 @@ export default function Sidebar() {
               ${isDark ? 'bg-charcoal-900 border-r border-white/5' : 'bg-white border-r border-charcoal-100'}`}
           >
             <div className="flex items-center gap-3 p-5 mb-2">
-              <div className="w-10 h-10 rounded-xl bg-gradient-emerald flex items-center justify-center">
+              <div
+                className="w-10 h-10 rounded-xl flex items-center justify-center"
+                style={{ background: 'var(--theme-gradient)' }}
+              >
                 <Sparkles className="w-5 h-5 text-white" />
               </div>
               <div>
@@ -134,6 +179,10 @@ export default function Sidebar() {
                 <p className={`text-xs ${isDark ? 'text-charcoal-400' : 'text-charcoal-500'}`}>Back on Track</p>
               </div>
             </div>
+
+            {/* Agent badge on mobile */}
+            <AgentBadge agent={agent} mode={appMode} open={true} />
+
             <nav className="flex-1 px-3 space-y-1 overflow-y-auto">
               {navItems.map((item) => (
                 <NavLink
@@ -142,10 +191,7 @@ export default function Sidebar() {
                   onClick={() => setSidebarOpen(false)}
                   className={({ isActive }) =>
                     `flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200
-                    ${isActive
-                      ? isDark ? 'bg-emerald-500/15 text-emerald-400' : 'bg-emerald-500/10 text-emerald-500'
-                      : isDark ? 'text-charcoal-400 hover:text-white hover:bg-white/5' : 'text-charcoal-500 hover:text-charcoal-900 hover:bg-charcoal-50'
-                    }`
+                    ${isActive ? activeClass : inactiveClass}`
                   }
                 >
                   <item.icon className="w-6 h-6" />

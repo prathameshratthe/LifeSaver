@@ -3,6 +3,7 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import TopBar from './TopBar';
 import BottomNav from './BottomNav';
+import GamificationBar from '../GamificationBar';
 import { useThemeStore } from '../../stores/themeStore';
 import { useAppStore } from '../../stores/appStore';
 
@@ -25,8 +26,25 @@ export default function AppLayout() {
 
   if (isLoading && !hasInitialized) {
     return (
-      <div className={`min-h-screen flex items-center justify-center ${isDark ? 'bg-gradient-main text-white' : 'bg-gradient-main-light text-charcoal-900'}`}>
-        <div className="w-10 h-10 border-4 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin" />
+      <div
+        className={`min-h-screen flex flex-col items-center justify-center gap-4 ${isDark ? 'bg-gradient-main text-white' : 'bg-gradient-main-light text-charcoal-900'}`}
+      >
+        <div className="relative w-16 h-16">
+          <div
+            className="absolute inset-0 rounded-full border-4 border-t-transparent animate-spin"
+            style={{ borderColor: 'var(--theme-primary-dim)', borderTopColor: 'var(--theme-primary)' }}
+          />
+          <div
+            className="absolute inset-2 rounded-full border-2 border-t-transparent animate-spin"
+            style={{
+              borderColor: 'var(--theme-primary-dim)',
+              borderTopColor: 'var(--theme-secondary)',
+              animationDirection: 'reverse',
+              animationDuration: '0.7s',
+            }}
+          />
+        </div>
+        <p className="text-sm text-charcoal-400 animate-pulse">Loading your dashboard…</p>
       </div>
     );
   }
@@ -36,6 +54,8 @@ export default function AppLayout() {
       <Sidebar />
       <div className={`transition-all duration-300 flex flex-col min-h-screen ${sidebarOpen ? 'md:ml-64' : 'md:ml-20'}`}>
         <TopBar />
+        {/* Gamification bar — always visible */}
+        <GamificationBar />
         <main className="flex-1 p-4 md:p-6 lg:p-8 w-full max-w-7xl mx-auto pb-24 md:pb-8">
           <Outlet />
         </main>
