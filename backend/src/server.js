@@ -8,8 +8,11 @@ const app = express();
 // Middleware
 const allowedOrigins = [
   'http://localhost:3000',
+  'https://life-saver-beta.vercel.app',
+  'https://frontend-eight-sand-66.vercel.app',
   process.env.FRONTEND_URL,
 ].filter(Boolean);
+
 app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use(express.json({ limit: '10mb' }));
 
